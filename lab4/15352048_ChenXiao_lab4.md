@@ -63,8 +63,41 @@ a,b,e,b,d,b. Use a table notation.
 | d     | 1, D2  |        | 1, D2->G        |
 | b     | 1, G   |        | 1, G            |
 
+##### 6.Conversion of StateChart to a finite state machine (FSM)
+
+Draw a finite state machine which is equivalent to the StateChart from Fig. 1. Minimize the number of states.
+
+![](https://github.com/uio1324/Embedded-system/raw/master/lab4/FSM.png)
+
+
+
+##### 7.StateChart model of a vending machine
+
+###### 1.当inserts a coin 和 orders a tea发生时
+
+状态(0,A)转换为(1,B)，然后执行当满足req_tea时执行start_tea转换为(1,D)，然后执行当满足drink_ready时执行done转换为(0,A)
+
+######2.Describe the trace of transitions that illustrate the bug.
+
+| event              | state | action    | state change |
+| ------------------ | ----- | --------- | ------------ |
+| coin_in            | 0,A   | ok        | 1,B          |
+| req_tea/req_coffee | 1,B   | start_tea | 1,D/C        |
+| cancel             | 1,D/C | coin_out  | 1->0,D/C     |
+| drink_ready        | 0,D/C | done      | 0,D/C->A     |
+
+
+
+即按这个时间顺序执行的话，在点完饮品之后发生事件cancel既可以得到退币也可以得到饮品。
+
+
+
+###### 3.Draw the corresponding StateChart that fixes the bug
+
+![](https://github.com/uio1324/Embedded-system/raw/master/lab4/fixed.png)
+
 
 
 ### 3.实验心得
 
-​	本次实验是更加直观和从代码上对进程和通道、连接进行了理解。
+​	认真，细心，仔细。看好Action和Trigger
