@@ -1,0 +1,3 @@
+Dependencies for Project 'NOTGate', Target 'NOTGate': (DO NOT MODIFY !)
+F (.\Startup.s)(0x56A7B8B3)(--cpu Cortex-M4 -g --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\Luminary--list .\startup.lst --xref -o .\startup.o --depend .\startup.d)
+F (.\GPIO.s)(0x5A0E4488)(--cpu Cortex-M4 -g --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\Luminary--list .\gpio.lst --xref -o .\gpio.o --depend .\gpio.d)

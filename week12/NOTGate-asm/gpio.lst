@@ -1,0 +1,233 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ; GPIO.s
+    2 00000000         ; Runs on LM4F120 and TM4C123
+    3 00000000         ; Implements a NOT gate described in class
+    4 00000000         ; PD3 is an output to LED, Positive logic
+    5 00000000         ; PD0 is an input from switch, Positive logic
+    6 00000000         ; Switch pressed causes LED to go OFF and 
+    7 00000000         ; release causes LED to go ON.
+    8 00000000         ; **** To run this example in Simulator 
+    9 00000000         ; make sure and copy the C0DLL.dll file 
+   10 00000000         ;(in the folder where this [GPIO.s]file is)
+   11 00000000         ; to your Keil ARM/Bin folder; 
+   12 00000000         ;;  Note that running the simulator gives 4 warnings
+   13 00000000         ;;  Click OK and continue
+   14 00000000         
+   15 00000000 400073FC 
+                       GPIO_PORTD_DATA_R
+                               EQU              0x400073FC
+   16 00000000 40007400 
+                       GPIO_PORTD_DIR_R
+                               EQU              0x40007400
+   17 00000000 4C4F434B 
+                       GPIO_PORTD_LOCK_R
+                               EQU              0x4C4F434B
+   18 00000000 40007420 
+                       GPIO_PORTD_AFSEL_R
+                               EQU              0x40007420
+   19 00000000 4000751C 
+                       GPIO_PORTD_DEN_R
+                               EQU              0x4000751C
+   20 00000000         
+   21 00000000 400FE108 
+                       SYSCTL_RCGCGPIO_R
+                               EQU              0x400FE108
+   22 00000000         
+   23 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+   24 00000000                 THUMB
+   25 00000000                 EXPORT           Start
+   26 00000000         GPIO_Init
+   27 00000000         ; 1) activate clock for Port D
+   28 00000000         
+   29 00000000 4914            LDR              R1, =SYSCTL_RCGCGPIO_R
+   30 00000002 6808            LDR              R0, [R1]    ; R0 = [R1]
+   31 00000004 F040 0008       ORR              R0, R0, #0x08 ; R0 = R0|0x08
+   32 00000008 6008            STR              R0, [R1]    ; [R1] = R0
+   33 0000000A BF00            NOP
+   34 0000000C BF00            NOP
+   35 0000000E BF00            NOP
+   36 00000010 BF00            NOP                          ; allow time to fin
+                                                            ish activating
+   37 00000012         ;unlock PD0,PD3
+   38 00000012         ;LDR R1, =GPIO_PORTD_LOCK_R
+   39 00000012         ;LDR R0, [R1]                    ; R0 = [R1]
+   40 00000012         ;ORR R0, R0, #0x09 ; R0 = R0|0x08
+   41 00000012         ;STR R0, [R1]                    ; [R1] = R0
+   42 00000012         ; 3) set direction register
+   43 00000012 4911            LDR              R1, =GPIO_PORTD_DIR_R ; R1 = &G
+                                                            PIO_PORTD_DIR_R
+   44 00000014 6808            LDR              R0, [R1]    ; R0 = [R1]
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   45 00000016 F040 0008       ORR              R0, R0, #0x08 ; R0 = R0|0x08 (m
+                                                            ake PD3 output)
+   46 0000001A F020 0001       BIC              R0, R0, #0x01 ; R0 = R0 & NOT(0
+                                                            x01) (make PD0 inpu
+                                                            t)
+   47 0000001E 6008            STR              R0, [R1]    ; [R1] = R0
+   48 00000020         ; 4) regular port function
+   49 00000020 490E            LDR              R1, =GPIO_PORTD_AFSEL_R ; R1 = 
+                                                            &GPIO_PORTD_AFSEL_R
+                                                            
+   50 00000022 6808            LDR              R0, [R1]    ; R0 = [R1]
+   51 00000024 F020 0009       BIC              R0, R0, #0x09 ; R0 = R0&~0x09 (
+                                                            disable alt funct o
+                                                            n PD3,PD0)
+   52 00000028 6008            STR              R0, [R1]    ; [R1] = R0
+   53 0000002A         ; 5) enable digital port
+   54 0000002A 490D            LDR              R1, =GPIO_PORTD_DEN_R ; R1 = &G
+                                                            PIO_PORTD_DEN_R
+   55 0000002C 6808            LDR              R0, [R1]    ; R0 = [R1]
+   56 0000002E F040 0009       ORR              R0, R0, #0x09 ; R0 = R0|0x09 (e
+                                                            nable digital I/O o
+                                                            n PD3,PD0)
+   57 00000032 6008            STR              R0, [R1]    ; [R1] = R0
+   58 00000034         
+   59 00000034         
+   60 00000034 4770            BX               LR
+   61 00000036         
+   62 00000036         Start
+   63 00000036 F7FF FFE3       BL               GPIO_Init
+   64 0000003A 480A            LDR              R0, =GPIO_PORTD_DATA_R
+   65 0000003C         
+   66 0000003C         loop
+   67 0000003C 6801            LDR              R1,[R0]
+   68 0000003E F001 0101       AND              R1,#0x01    ; Isolate PD0
+   69 00000042 F081 0101       EOR              R1,#0x01    ; NOT state of PD0 
+                                                            read into R1
+   70 00000046 6001            STR              R1,[R0]
+   71 00000048 BF00            nop
+   72 0000004A BF00            nop
+   73 0000004C EA4F 01C1       LSL              R1,#3       ; SHIFT left negate
+                                                            d state of PD0 read
+                                                             into R1
+   74 00000050 6001            STR              R1,[R0]     ; Write to PortD DA
+                                                            TA register to upda
+                                                            te LED on PD3
+   75 00000052 E7F3            B                loop        ; unconditional bra
+                                                            nch to 'loop'
+   76 00000054         
+   77 00000054         
+   78 00000054                 ALIGN                        ; make sure the end
+                                                             of this section is
+                                                             aligned
+   79 00000054                 END                          ; end of file
+              400FE108 
+              40007400 
+              40007420 
+              4000751C 
+              400073FC 
+Command Line: --debug --xref --cpu=Cortex-M4 --apcs=interwork --depend=.\gpio.d
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+ -o.\gpio.o -Id:\Keil\ARM\RV31\INC -Id:\Keil\ARM\CMSIS\Include -Id:\Keil\ARM\In
+c\Luminary --list=.\gpio.lst GPIO.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 23 in file GPIO.s
+   Uses
+      None
+Comment: .text unused
+GPIO_Init 00000000
+
+Symbol: GPIO_Init
+   Definitions
+      At line 26 in file GPIO.s
+   Uses
+      At line 63 in file GPIO.s
+Comment: GPIO_Init used once
+Start 00000036
+
+Symbol: Start
+   Definitions
+      At line 62 in file GPIO.s
+   Uses
+      At line 25 in file GPIO.s
+Comment: Start used once
+loop 0000003C
+
+Symbol: loop
+   Definitions
+      At line 66 in file GPIO.s
+   Uses
+      At line 75 in file GPIO.s
+Comment: loop used once
+4 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+GPIO_PORTD_AFSEL_R 40007420
+
+Symbol: GPIO_PORTD_AFSEL_R
+   Definitions
+      At line 18 in file GPIO.s
+   Uses
+      At line 49 in file GPIO.s
+Comment: GPIO_PORTD_AFSEL_R used once
+GPIO_PORTD_DATA_R 400073FC
+
+Symbol: GPIO_PORTD_DATA_R
+   Definitions
+      At line 15 in file GPIO.s
+   Uses
+      At line 64 in file GPIO.s
+Comment: GPIO_PORTD_DATA_R used once
+GPIO_PORTD_DEN_R 4000751C
+
+Symbol: GPIO_PORTD_DEN_R
+   Definitions
+      At line 19 in file GPIO.s
+   Uses
+      At line 54 in file GPIO.s
+Comment: GPIO_PORTD_DEN_R used once
+GPIO_PORTD_DIR_R 40007400
+
+Symbol: GPIO_PORTD_DIR_R
+   Definitions
+      At line 16 in file GPIO.s
+   Uses
+      At line 43 in file GPIO.s
+Comment: GPIO_PORTD_DIR_R used once
+GPIO_PORTD_LOCK_R 4C4F434B
+
+Symbol: GPIO_PORTD_LOCK_R
+   Definitions
+      At line 17 in file GPIO.s
+   Uses
+      None
+Comment: GPIO_PORTD_LOCK_R unused
+SYSCTL_RCGCGPIO_R 400FE108
+
+Symbol: SYSCTL_RCGCGPIO_R
+   Definitions
+      At line 21 in file GPIO.s
+   Uses
+      At line 29 in file GPIO.s
+Comment: SYSCTL_RCGCGPIO_R used once
+6 symbols
+342 symbols in table
