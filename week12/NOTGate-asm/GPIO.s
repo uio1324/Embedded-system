@@ -70,6 +70,10 @@ loop
 	STR R1,[R0]
 	nop
 	nop
+	nop
+	nop
+	nop
+	nop
 	LSL R1,#2			; SHIFT left negated state of PD0 read into R1
 	STR R1,[R0]			; Write to PortD DATA register to update LED on PD3
     B loop                          ; unconditional branch to 'loop'

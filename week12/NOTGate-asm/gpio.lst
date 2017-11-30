@@ -45,7 +45,7 @@ ARM Macro Assembler    Page 1
    26 00000000         GPIO_Init
    27 00000000         ; 1) activate clock for Port D
    28 00000000         
-   29 00000000 4914            LDR              R1, =SYSCTL_RCGCGPIO_R
+   29 00000000 4916            LDR              R1, =SYSCTL_RCGCGPIO_R
    30 00000002 6808            LDR              R0, [R1]    ; R0 = [R1]
    31 00000004 F040 0008       ORR              R0, R0, #0x08 ; R0 = R0|0x08
    32 00000008 6008            STR              R0, [R1]    ; [R1] = R0
@@ -60,7 +60,7 @@ ARM Macro Assembler    Page 1
    40 00000012         ;ORR R0, R0, #0x09 ; R0 = R0|0x08
    41 00000012         ;STR R0, [R1]                    ; [R1] = R0
    42 00000012         ; 3) set direction register
-   43 00000012 4911            LDR              R1, =GPIO_PORTD_DIR_R ; R1 = &G
+   43 00000012 4913            LDR              R1, =GPIO_PORTD_DIR_R ; R1 = &G
                                                             PIO_PORTD_DIR_R
    44 00000014 6808            LDR              R0, [R1]    ; R0 = [R1]
 
@@ -76,7 +76,7 @@ ARM Macro Assembler    Page 2
                                                             t)
    47 0000001E 6008            STR              R0, [R1]    ; [R1] = R0
    48 00000020         ; 4) regular port function
-   49 00000020 490E            LDR              R1, =GPIO_PORTD_AFSEL_R ; R1 = 
+   49 00000020 4910            LDR              R1, =GPIO_PORTD_AFSEL_R ; R1 = 
                                                             &GPIO_PORTD_AFSEL_R
                                                             
    50 00000022 6808            LDR              R0, [R1]    ; R0 = [R1]
@@ -85,7 +85,7 @@ ARM Macro Assembler    Page 2
                                                             n PD2,PD0)
    52 00000028 6008            STR              R0, [R1]    ; [R1] = R0
    53 0000002A         ; 5) enable digital port
-   54 0000002A 490D            LDR              R1, =GPIO_PORTD_DEN_R ; R1 = &G
+   54 0000002A 490F            LDR              R1, =GPIO_PORTD_DEN_R ; R1 = &G
                                                             PIO_PORTD_DEN_R
    55 0000002C 6808            LDR              R0, [R1]    ; R0 = [R1]
    56 0000002E F040 0005       ORR              R0, R0, #0x05 ; R0 = R0|0x09 (e
@@ -98,7 +98,7 @@ ARM Macro Assembler    Page 2
    61 00000036         
    62 00000036         Start
    63 00000036 F7FF FFE3       BL               GPIO_Init
-   64 0000003A 480A            LDR              R0, =GPIO_PORTD_DATA_R
+   64 0000003A 480C            LDR              R0, =GPIO_PORTD_DATA_R
    65 0000003C         
    66 0000003C         loop
    67 0000003C 6801            LDR              R1,[R0]
@@ -108,32 +108,36 @@ ARM Macro Assembler    Page 2
    70 00000046 6001            STR              R1,[R0]
    71 00000048 BF00            nop
    72 0000004A BF00            nop
-   73 0000004C EA4F 0181       LSL              R1,#2       ; SHIFT left negate
+   73 0000004C BF00            nop
+   74 0000004E BF00            nop
+   75 00000050 BF00            nop
+   76 00000052 BF00            nop
+   77 00000054 EA4F 0181       LSL              R1,#2       ; SHIFT left negate
                                                             d state of PD0 read
                                                              into R1
-   74 00000050 6001            STR              R1,[R0]     ; Write to PortD DA
+   78 00000058 6001            STR              R1,[R0]     ; Write to PortD DA
                                                             TA register to upda
                                                             te LED on PD3
-   75 00000052 E7F3            B                loop        ; unconditional bra
+   79 0000005A E7EF            B                loop        ; unconditional bra
                                                             nch to 'loop'
-   76 00000054         
-   77 00000054         
-   78 00000054                 ALIGN                        ; make sure the end
+   80 0000005C         
+   81 0000005C         
+   82 0000005C                 ALIGN                        ; make sure the end
                                                              of this section is
                                                              aligned
-   79 00000054                 END                          ; end of file
+   83 0000005C                 END                          ; end of file
               400FE108 
               40007400 
-              40007420 
-              4000751C 
-              400073FC 
-Command Line: --debug --xref --cpu=Cortex-M4 --apcs=interwork --depend=.\gpio.d
 
 
 
 ARM Macro Assembler    Page 3 
 
 
+              40007420 
+              4000751C 
+              400073FC 
+Command Line: --debug --xref --cpu=Cortex-M4 --apcs=interwork --depend=.\gpio.d
  -o.\gpio.o -ID:\Keli\ARM\RV31\INC -ID:\Keli\ARM\CMSIS\Include -ID:\Keli\ARM\In
 c\Luminary --predefine="__EVAL SETA 1" --list=.\gpio.lst GPIO.s
 
@@ -172,7 +176,7 @@ Symbol: loop
    Definitions
       At line 66 in file GPIO.s
    Uses
-      At line 75 in file GPIO.s
+      At line 79 in file GPIO.s
 Comment: loop used once
 4 symbols
 
