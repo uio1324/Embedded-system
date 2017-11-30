@@ -1066,8 +1066,8 @@ ARM Macro Assembler    Page 17
                        ***********************
   653 0000001C                 END
 Command Line: --debug --xref --cpu=Cortex-M4 --apcs=interwork --depend=.\startu
-p.d -o.\startup.o -Id:\Keil\ARM\RV31\INC -Id:\Keil\ARM\CMSIS\Include -Id:\Keil\
-ARM\Inc\Luminary --list=.\startup.lst Startup.s
+p.d -o.\startup.o -ID:\Keli\ARM\RV31\INC -ID:\Keli\ARM\CMSIS\Include -ID:\Keli\
+ARM\Inc\Luminary --predefine="__EVAL SETA 1" --list=.\startup.lst Startup.s
 
 
 
@@ -2493,4 +2493,4 @@ Symbol: Start
       At line 277 in file Startup.s
 Comment: Start used once
 1 symbol
-473 symbols in table
+474 symbols in table

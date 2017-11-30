@@ -69,8 +69,8 @@ ARM Macro Assembler    Page 1
 ARM Macro Assembler    Page 2 
 
 
-   45 00000016 F040 0008       ORR              R0, R0, #0x08 ; R0 = R0|0x08 (m
-                                                            ake PD3 output)
+   45 00000016 F040 0004       ORR              R0, R0, #0x04 ; R0 = R0|0x04 (m
+                                                            ake PD2 output)
    46 0000001A F020 0001       BIC              R0, R0, #0x01 ; R0 = R0 & NOT(0
                                                             x01) (make PD0 inpu
                                                             t)
@@ -80,17 +80,17 @@ ARM Macro Assembler    Page 2
                                                             &GPIO_PORTD_AFSEL_R
                                                             
    50 00000022 6808            LDR              R0, [R1]    ; R0 = [R1]
-   51 00000024 F020 0009       BIC              R0, R0, #0x09 ; R0 = R0&~0x09 (
+   51 00000024 F020 0005       BIC              R0, R0, #0x05 ; R0 = R0&~0x05 (
                                                             disable alt funct o
-                                                            n PD3,PD0)
+                                                            n PD2,PD0)
    52 00000028 6008            STR              R0, [R1]    ; [R1] = R0
    53 0000002A         ; 5) enable digital port
    54 0000002A 490D            LDR              R1, =GPIO_PORTD_DEN_R ; R1 = &G
                                                             PIO_PORTD_DEN_R
    55 0000002C 6808            LDR              R0, [R1]    ; R0 = [R1]
-   56 0000002E F040 0009       ORR              R0, R0, #0x09 ; R0 = R0|0x09 (e
+   56 0000002E F040 0005       ORR              R0, R0, #0x05 ; R0 = R0|0x09 (e
                                                             nable digital I/O o
-                                                            n PD3,PD0)
+                                                            n PD2,PD0)
    57 00000032 6008            STR              R0, [R1]    ; [R1] = R0
    58 00000034         
    59 00000034         
@@ -108,7 +108,7 @@ ARM Macro Assembler    Page 2
    70 00000046 6001            STR              R1,[R0]
    71 00000048 BF00            nop
    72 0000004A BF00            nop
-   73 0000004C EA4F 01C1       LSL              R1,#3       ; SHIFT left negate
+   73 0000004C EA4F 0181       LSL              R1,#2       ; SHIFT left negate
                                                             d state of PD0 read
                                                              into R1
    74 00000050 6001            STR              R1,[R0]     ; Write to PortD DA
@@ -134,8 +134,8 @@ Command Line: --debug --xref --cpu=Cortex-M4 --apcs=interwork --depend=.\gpio.d
 ARM Macro Assembler    Page 3 
 
 
- -o.\gpio.o -Id:\Keil\ARM\RV31\INC -Id:\Keil\ARM\CMSIS\Include -Id:\Keil\ARM\In
-c\Luminary --list=.\gpio.lst GPIO.s
+ -o.\gpio.o -ID:\Keli\ARM\RV31\INC -ID:\Keli\ARM\CMSIS\Include -ID:\Keli\ARM\In
+c\Luminary --predefine="__EVAL SETA 1" --list=.\gpio.lst GPIO.s
 
 
 
@@ -230,4 +230,4 @@ Symbol: SYSCTL_RCGCGPIO_R
       At line 29 in file GPIO.s
 Comment: SYSCTL_RCGCGPIO_R used once
 6 symbols
-342 symbols in table
+343 symbols in table

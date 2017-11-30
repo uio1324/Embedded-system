@@ -42,18 +42,18 @@ GPIO_Init
     ; 3) set direction register
     LDR R1, =GPIO_PORTD_DIR_R       ; R1 = &GPIO_PORTD_DIR_R
     LDR R0, [R1]                    ; R0 = [R1]
-    ORR R0, R0, #0x08               ; R0 = R0|0x08 (make PD3 output)
+    ORR R0, R0, #0x04               ; R0 = R0|0x04 (make PD2 output)
 	BIC R0, R0, #0x01				; R0 = R0 & NOT(0x01) (make PD0 input)
     STR R0, [R1]                    ; [R1] = R0
     ; 4) regular port function
     LDR R1, =GPIO_PORTD_AFSEL_R     ; R1 = &GPIO_PORTD_AFSEL_R
     LDR R0, [R1]                    ; R0 = [R1]
-    BIC R0, R0, #0x09               ; R0 = R0&~0x09 (disable alt funct on PD3,PD0)
+    BIC R0, R0, #0x05               ; R0 = R0&~0x05 (disable alt funct on PD2,PD0)
     STR R0, [R1]                    ; [R1] = R0
     ; 5) enable digital port
     LDR R1, =GPIO_PORTD_DEN_R       ; R1 = &GPIO_PORTD_DEN_R
     LDR R0, [R1]                    ; R0 = [R1]
-    ORR R0, R0, #0x09               ; R0 = R0|0x09 (enable digital I/O on PD3,PD0)
+    ORR R0, R0, #0x05               ; R0 = R0|0x09 (enable digital I/O on PD2,PD0)
     STR R0, [R1]                    ; [R1] = R0
    
 	
@@ -70,7 +70,7 @@ loop
 	STR R1,[R0]
 	nop
 	nop
-	LSL R1,#3			; SHIFT left negated state of PD0 read into R1
+	LSL R1,#2			; SHIFT left negated state of PD0 read into R1
 	STR R1,[R0]			; Write to PortD DATA register to update LED on PD3
     B loop                          ; unconditional branch to 'loop'
 
